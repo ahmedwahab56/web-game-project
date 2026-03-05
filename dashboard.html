@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>Dashboard</title>
+
+<style>
+body 
+{ 
+ font-family:Arial; text-align:center; 
+}
+.dark 
+{ 
+ background:black; color:white; 
+}
+</style>
+
+</head>
+<body>
+<fieldset style="background-color:green" ><legend>Dashboard</legend>
+<h2 id="welcome"></h2>
+
+<button onclick="colormode()">Dark Mode ON/OFF</button>
+<br><br>
+<a href="games.html">Go to Games</a>
+</fieldset>
+<script>
+let user=localStorage.getItem("user");
+document.getElementById("welcome").innerText="Welcome "+user;
+
+function colormode(){
+document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>

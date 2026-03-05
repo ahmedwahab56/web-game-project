@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>Rock Paper Scissors</title>
+
+<style>
+body
+{
+ font-family:Arial;
+ text-align:center;
+}
+button
+{
+ padding:6px;
+ margin:5px;
+}
+.dark
+{
+ background:black;
+ color:white;
+}
+</style>
+</head>
+
+<body>
+<fieldset style="background-color:yellow" ><legend>Rock Paper Scissors</legend>
+<h2>Rock Paper Scissors</h2>
+<p>Win = 5 points</p>
+
+<button onclick="play('rock')">Rock</button>
+<button onclick="play('paper')">Paper</button>
+<button onclick="play('scissors')">Scissors</button>
+<button onclick="toggleTheme()">Theme</button>
+
+<p id="result"></p>
+
+<h3>Leaderboard (Total Score)</h3>
+<ul id="board"></ul>
+
+<a href="games.html">Back</a>
+</fieldset>
+<script>
+
+function play(choice){
+
+let arr=["rock","paper","scissors"];
+let comp=arr[Math.floor(Math.random()*3)];
+let result;
+let score=0;
+
+if(choice==comp) result="Draw";
+else if(
+(choice=="rock"&&comp=="scissors")||
+(choice=="paper"&&comp=="rock")||
+(choice=="scissors"&&comp=="paper")
+){
+result="Win";
+score=5;
+saveScore(score);
+}
+else result="Lose";
+
+document.getElementById("result").innerText=
+"Computer: "+comp+" → "+result;
+
+showBoard();
+}
+
+function saveScore(score){
+let scores=JSON.parse(localStorage.getItem("rpsGame"))||[];
+scores.push({name:localStorage.getItem("user"),score:score});
+localStorage.setItem("rpsGame",JSON.stringify(scores));
+}
+
+function showBoard(){
+
+let scores=JSON.parse(localStorage.getItem("rpsGame"))||[];
+
+let total={};
+
+scores.forEach(s=>{
+total[s.name]=(total[s.name]||0)+s.score;
+});
+
+let final=Object.keys(total).map(n=>({name:n,score:total[n]}));
+final.sort((a,b)=>b.score-a.score);
+
+let list=document.getElementById("board");
+list.innerHTML="";
+
+final.slice(0,5).forEach(s=>{
+let li=document.createElement("li");
+li.innerText=s.name+" - "+s.score;
+list.appendChild(li);
+});
+}
+
+function toggleTheme(){
+document.body.classList.toggle("dark");
+}
+
+showBoard();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>Tic Tac Toe</title>
+
+<style>
+body
+{
+ font-family:Arial;text-align:center;
+}
+table
+{
+ margin:auto;border-collapse:collapse;
+}
+td
+{
+width:70px;
+height:70px;
+border:1px solid black;
+font-size:30px;
+cursor:pointer;
+text-align:center;
+}
+.dark
+{
+ background:black;color:white;
+}
+</style>
+</head>
+
+<body>
+<fieldset style="background-color:pink" ><legend>Tic Tac Toe</legend>
+<h2>Tic Tac Toe</h2>
+
+<table id="grid">
+<tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
+<tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
+<tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
+</table>
+
+<br>
+<button onclick="resetGame()">Reset</button>
+<button onclick="toggleTheme()">Theme</button>
+
+<p id="result"></p>
+
+<h3>Leaderboard (Total Score)</h3>
+<ul id="board"></ul>
+
+<a href="games.html">Back</a>
+</fieldset>
+
+<script>
+
+let turn="X";
+let gameOver=false;
+
+function play(cell){
+
+if(cell.innerHTML=="" && !gameOver){
+cell.innerHTML=turn;
+
+if(checkWin()){
+document.getElementById("result").innerText=turn+" Wins! +10";
+saveScore(10);
+showBoard();
+gameOver=true;
+return;
+}
+
+turn=(turn=="X")?"O":"X";
+}
+}
+
+function checkWin(){
+
+let c=document.getElementsByTagName("td");
+
+let combos=[
+[0,1,2],[3,4,5],[6,7,8],
+[0,3,6],[1,4,7],[2,5,8],
+[0,4,8],[2,4,6]
+];
+
+for(let x of combos){
+if(c[x[0]].innerHTML!="" &&
+c[x[0]].innerHTML==c[x[1]].innerHTML &&
+c[x[1]].innerHTML==c[x[2]].innerHTML){
+return true;
+}
+}
+
+return false;
+}
+
+function saveScore(score){
+let scores=JSON.parse(localStorage.getItem("tttGame"))||[];
+scores.push({name:localStorage.getItem("user"),score:score});
+localStorage.setItem("tttGame",JSON.stringify(scores));
+}
+
+function resetGame(){
+let cells=document.getElementsByTagName("td");
+for(let cell of cells) cell.innerHTML="";
+turn="X";
+gameOver=false;
+document.getElementById("result").innerText="";
+}
+
+function showBoard(){
+
+let scores=JSON.parse(localStorage.getItem("tttGame"))||[];
+
+let total={};
+
+scores.forEach(s=>{
+total[s.name]=(total[s.name]||0)+s.score;
+});
+
+let final=Object.keys(total).map(n=>({name:n,score:total[n]}));
+final.sort((a,b)=>b.score-a.score);
+
+let list=document.getElementById("board");
+list.innerHTML="";
+
+final.slice(0,5).forEach(s=>{
+let li=document.createElement("li");
+li.innerText=s.name+" - "+s.score;
+list.appendChild(li);
+});
+}
+
+function toggleTheme(){
+document.body.classList.toggle("dark");
+}
+
+showBoard();
+
+</script>
+</body>
+</html>
